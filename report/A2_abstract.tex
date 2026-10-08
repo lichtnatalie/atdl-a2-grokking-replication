@@ -1,0 +1,11 @@
+% A2 — Abstract.  DRAFT 1, 6 Oct 2026 (~150 words).
+Liu et al.\ explain grokking with an effective theory that predicts a critical
+training data fraction $r_c \approx 0.4$ for a toy addition task. I test this prediction with the authors' released code. The training-free part reproduces. The probability that the training data determine the
+linear representation crosses one half at $r = 0.41$, and my implementation agrees with the authors' on all 1800 training sets checked. Trained networks,
+however, do not follow the prediction with the released settings. Over twenty
+seeds per training size, half of the runs succeed within $10^4$ steps only at
+$r \approx 0.76$. Only 70 of the 138 runs whose data determine the representation actually find it.
+Decoder weight decay has almost no effect. The decoder learning rate matters
+a lot, since a slower decoder raises this number to 96 and a faster one
+lowers it to 15. Whether a network finds the structure thus depends on how
+fast the decoder learns, which the theory does not model.

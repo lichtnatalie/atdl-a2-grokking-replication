@@ -1,0 +1,63 @@
+% =====================================================================
+% A2 — SUBMISSION FILE.  Reproducibility study, Replication Track.
+% Built on the official ISBI template (spconf.sty + IEEEbib.bst, taken
+% verbatim from ISBI_template-master, as in A1).
+% No geometry, font size, line spacing or margin is modified here.
+% Build:  pdflatex -> bibtex -> pdflatex -> pdflatex   (or: latexmk -pdf)
+%
+% Brief requirements on the front page: group number, all members, track,
+% GitHub link. Contribution statement: not required for a solo submission
+% (Natalie, 1 Oct 2026).
+%
+% STATUS (6 Oct 2026): full draft, all sections written.
+%   NEXT     : Natalie's revision pass; GitHub URL below; final checks.
+% =====================================================================
+
+\documentclass{article}
+\usepackage{spconf,amsmath,graphicx}
+\usepackage{amssymb}
+\usepackage{url}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,calc}
+% Draft notes: remove the \todo calls (not this macro) as sections get written.
+\newcommand{\todo}[1]{\par\noindent{\color{gray}\small\textsf{[TO WRITE]} #1}\par}
+
+\title{Reproducing the Critical Training Set Size of an Effective Theory
+       of Grokking}
+
+\name{Charlotte Natalie Licht}
+\address{Group 73 \quad$\cdot$\quad Replication Track \\
+         Advanced Topics in Deep Learning, University of Copenhagen \\
+         \texttt{pcb887@alumni.ku.dk} \\
+         Code: \url{https://github.com/lichtnatalie/atdl-a2-grokking-replication}}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\input{A2_abstract}
+\end{abstract}
+
+\begin{keywords}
+Grokking, reproducibility, representation learning, effective theory,
+critical training set size
+\end{keywords}
+
+\input{A2_intro}
+\input{A2_background}
+\input{A2_methods}
+\input{A2_results}
+\input{A2_ablations}
+\input{A2_discussion}
+
+\section{Compliance with ethical standards}
+\label{sec:ethics}
+This is a numerical simulation study on synthetic data, for which no
+ethical approval was required.
+
+\bibliographystyle{IEEEbib}
+\bibliography{refs_a2}
+
+\end{document}

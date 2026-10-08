@@ -1,0 +1,72 @@
+% =====================================================================
+% A2 — Section 5: Ablations.  DRAFT 1, 6 Oct 2026.
+% Table 2 carries the numbers so the prose can stay short. Comparisons are
+% seed-level sign tests (runs sharing a seed are dependent across sizes:
+% same targets, initialisation and nested training sets), lambda_3 > 0 only.
+% =====================================================================
+\section{Ablations}
+\label{sec:ablations}
+
+Since $\lambda_3 > 0$ is not enough, something in training must decide whether
+a run finds the structure. The paper
+describes a ``competition between representation learning and decoder
+overfitting'' (lower half of Fig.~\ref{fig:pipeline}). Decoder weight decay and the decoder
+learning rate are two of the settings the paper's phase diagrams use to
+control this competition, so I varied them. Table~\ref{tab:ablations}
+summarises the results, and Fig.~\ref{fig:ablations} shows them per training
+size.
+
+\begin{table}[t]
+  \centering
+  \caption{All configurations, 220 runs each on the same training sets.
+  Successes, where runs reaching $\mathrm{RQI}>0.95$ within $10^4$ steps, split by
+  whether the run's training set has $\lambda_3>0$. $r$ at 50\% are training
+  data fraction at which half of all runs succeed. $+$/$-$ are number of the 20 seeds whose successes with
+  $\lambda_3>0$ go up/down relative to the released configuration (decoder
+  learning rate $10^{-4}$, no weight decay). $p$ are exact sign test over seeds.}
+  \label{tab:ablations}
+  \small
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabular}{@{}lccccc@{}}
+    \toprule
+    & \multicolumn{2}{c}{Successes} & & \multicolumn{2}{c}{Seeds vs.\ released} \\
+    \cmidrule(lr){2-3} \cmidrule(l){5-6}
+    Decoder setting & $\lambda_3{>}0$ & $\lambda_3{=}0$ & \shortstack{$r$ at\\50\%} & $+$/$-$ & $p$ \\
+    \midrule
+    Released & 70/138 & 0/82 & 0.76 & - & - \\
+    Weight decay 1   & 71/138 & 0/82 & 0.76 & 1/0  & 1.0 \\
+    Weight decay 5   & 74/138 & 0/82 & 0.76 & 4/0  & 0.13 \\
+    Learning rate $10^{-5}$ & 96/138 & 0/82 & 0.62 & 14/2 & 0.004 \\
+    Learning rate $10^{-3}$ & 15/138 & 0/82 & -   & 0/20 & $2{\times}10^{-6}$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+
+\subsection{A1: decoder weight decay}
+\label{sec:abl-wd}
+
+Weight decay does not matter much. With decay 1 or 5, 71 and 74 of the 138 runs
+with $\lambda_3 > 0$ succeed, compared with 70 without it. The point where
+half the runs succeed stays at $r \approx 0.76$. With a decoder learning rate of $10^{-4}$, a weight decay of
+5 in AdamW would on its own shrink the decoder weights to under 1\% of their
+size over $10^4$ steps. Even so, only four of the 68 failed runs recover.
+
+\subsection{A2: decoder learning rate}
+\label{sec:abl-lr}
+
+The decoder learning rate has a large effect, in the direction the paper's
+phase diagrams suggest. Setting the decoder learning rate to $10^{-5}$ raises the
+number of successful runs with $\lambda_3 > 0$ from 70 to 96, and moves the
+50\% point from $r \approx 0.76$ to $r \approx 0.62$. On the same training
+sets, 28 runs go from failure to success and only two the other way, and
+14 of the 20 seeds improve. A
+faster decoder ($10^{-3}$) does the opposite. Only 15 runs succeed, and the
+success probability never gets above 0.30. Its 123 failed runs with $\lambda_3 > 0$ fit the training set (at least
+93\%) but get only 25\% of the held-out pairs right.
+
+With the slow decoder, successful runs need fewer steps as $r$ grows, where the median is about 3500 at $r = 0.64$ and 2500 at $r = 0.98$, as the paper reports. Within
+one training size, steps and $\lambda_3$ show no consistent relation. The slow decoder does not close the gap completely, since 42 runs with
+$\lambda_3 > 0$ still fail. I retrained eight of them for $5 \times 10^4$
+steps. One passed the threshold at step 21,217 and
+then fell back to 0.67, and the other seven stayed below RQI 0.4.

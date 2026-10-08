@@ -1,0 +1,39 @@
+% =====================================================================
+% A2 — Section 6: Discussion and conclusion.  DRAFT 1, 6 Oct 2026.
+% The one "earned" contrast sentence (determine vs. find) lives here and in
+% the introduction only. The mechanism is stated as an interpretation.
+% =====================================================================
+\section{Discussion and conclusion}
+\label{sec:discussion}
+
+The first part of the paper's argument holds up well. Whether a training set
+pins down the linear representation can be computed exactly, and both my implementation and the authors' give a transition at $r \approx 0.4$. The second part holds
+up less well. With the released settings, trained networks find the structure less reliably than the theory suggests, and the time they need does not
+follow $1/\lambda_3$.
+
+In terms of Fig.~\ref{fig:pipeline}, the effective theory also predicts the
+lower half, but only for an gradient flow without a decoder. It says when the data \emph{determine} the representation, and not if a trained
+network \emph{finds} it. One explanation that fits my results is that the
+decoder sometimes overfits the training set before the embeddings have become
+structured. Once that happened, the training loss is close to zero. 
+This would explain why most failed runs stop improving. The effective loss has no decoder, so it cannot
+describe this. Slowing the decoder down helps and speeding it up makes it worse, which
+matches the competition between representation learning and decoder
+overfitting that the paper describes in its Sec.~4. But I did not measure gradients directly.
+
+My results show that C1 is correct, and
+the published Fig.~4(b) may come from settings closer to the slow-decoder runs.
+They also show that the agreement in that figure depends on
+training settings the paper does not report, and that $\lambda_3 > 0$ alone does not predict whether a network will find the
+structure.
+
+The study has some limitations. I only looked at addition with $p = 10$ and
+one-dimensional embeddings, and since training uses AdamW rather than gradient
+flow, only trends can be compared with the theory. With twenty seeds per size,
+the success probabilities at intermediate fractions are still uncertain by
+about $\pm 0.2$.
+
+For reproducibility, it would have helped if the paper had stated the
+settings and the number of seeds behind each figure. Reporting runs that never
+succeed as a separate group would also have helped. Both turned out to matter
+for me to understand what the published figures show.

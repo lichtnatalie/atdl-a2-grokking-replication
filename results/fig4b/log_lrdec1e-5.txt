@@ -1,0 +1,23 @@
+220 runs to do (0 already done) -> results/fig4b/runs_lrdec1e-5.csv
+10/220 done, 117s
+20/220 done, 230s
+30/220 done, 340s
+40/220 done, 452s
+50/220 done, 567s
+60/220 done, 681s
+70/220 done, 798s
+80/220 done, 910s
+90/220 done, 1023s
+100/220 done, 1136s
+110/220 done, 1243s
+120/220 done, 1352s
+130/220 done, 1462s
+140/220 done, 1575s
+150/220 done, 1687s
+160/220 done, 1798s
+170/220 done, 1909s
+180/220 done, 2017s
+190/220 done, 2122s
+200/220 done, 2230s
+210/220 done, 2339s
+220/220 done, 2445s

@@ -1,0 +1,154 @@
+% =====================================================================
+% A2 — Section 2: Background.  DRAFT 2, 3 Oct 2026.
+% Restructured after the A1 feedback: purpose before machinery, concept
+% before maths, one job per paragraph, Fig. 1 carries the argument.
+% Self-contained (A2 must be readable without A1); notation follows A1.
+% Draft 2 cuts the displayed effective loss: only H is needed downstream.
+% =====================================================================
+
+\section{Background}
+\label{sec:background}
+
+
+Liu et al.~\cite{liu2022grokking} study grokking on a task whose correct
+solution is known in advance, so that one can check directly whether a
+network has found it. Their argument has two stages summarised in
+Fig.~\ref{fig:pipeline}. First, the training data must contain enough information
+to determine the solution, and second, the training must then actually find it.
+
+\begin{figure}[t]
+  \centering
+  \input{A2_figure}
+  \caption{The argument tested in this study. Upper part, whether the
+  training set determines the linear representation depends only on the
+  equal-sum pairs it contains, summarised by $\lambda_3 > 0$ (claim C1).
+  Lower part, whether training then finds that representation depends on
+  the competition between representation learning and decoder overfitting
+  (claims C2 and C3).}
+  \label{fig:pipeline}
+\end{figure}
+
+\subsection{Task and model}
+\label{sec:task}
+
+The task needs a known correct solution, so Liu et al.\ use non-modular
+addition on the symbols $\{0, \dots, p-1\}$, here with $p = 10$. Because addition is a commutative operation, $(a,b)$ and $(b,a)$ are treated as
+one sample, so the full dataset $D_0$ contains $|D_0| = p(p+1)/2 = 55$ pairs.
+A training set $D \subset D_0$ is drawn at random, the remaining pairs are
+held out, and $r = |D|/|D_0|$ is the \emph{training data fraction}.
+
+The model gives each symbol a trainable embedding
+$\mathbf{E}_a \in \mathbb{R}^{d_{\mathrm{in}}}$, adds the two embeddings of a
+pair, and passes the sum to a decoder network:
+%
+\begin{equation}
+  (a,b) \;\longmapsto\; \mathrm{Dec}\!\left(\mathbf{E}_a + \mathbf{E}_b\right).
+  \label{eq:toymodel}
+\end{equation}
+%
+Each possible sum $c$ has a fixed random target vector $\mathbf{Y}_c$, and the
+model predicts the sum of those target is closest to its output. Since the
+addition of embeddings is built into the model, the only way it can answer an
+unseen pair is through the arrangement of its embeddings. As in the paper's Fig.~4, I use one-dimensional embeddings ($d_{\mathrm{in}} = 1$) and write
+$\mathbf{R} = [\mathbf{E}_0, \dots, \mathbf{E}_{p-1}]$ for the representation.
+
+\subsection{Representation quality}
+\label{sec:rqi}
+
+To measure whether the embeddings have the right arrangement, Liu et al.\ use
+pairs with equal sums. Say $i + j = m + n$ and the model maps both pairs to the
+same point, $\mathbf{E}_i + \mathbf{E}_j = \mathbf{E}_m + \mathbf{E}_n$. Then
+the decoder cannot tell the two pairs apart, so a correct answer for one
+transfers to the other. Such a quadruple is called a \emph{parallelogram}.
+
+For a model with zero training loss and an injective decoder, every two
+training pairs with the same sum must form a parallelogram
+(\cite{liu2022grokking}, Prop.~2). These are
+%
+\begin{equation}
+  P_0(D) = \left\{ (i,j,m,n) \,\middle|\,
+    \begin{array}{l}
+      (i,j) \in D,\ (m,n) \in D, \\[-1pt]
+      i+j = m+n
+    \end{array} \right\}.
+  \label{eq:permissible}
+\end{equation}
+%
+The \emph{representation quality index} is the fraction of all parallelograms
+of the full dataset, $P_0 \equiv P_0(D_0)$, that the representation realises
+within a tolerance $\delta$. Writing $P(\mathbf{R}, \delta)$ for the
+parallelograms in $P_0$ with
+$|\mathbf{E}_i + \mathbf{E}_j - \mathbf{E}_m - \mathbf{E}_n| \le \delta$,
+%
+\begin{equation}
+  \mathrm{RQI}(\mathbf{R}) = \frac{|P(\mathbf{R}, \delta)|}{|P_0|} \in [0, 1].
+  \label{eq:rqi}
+\end{equation}
+%
+Evenly spaced embeddings, $\mathbf{E}_k = \mathbf{a} + k\mathbf{b}$, realise
+every parallelogram and give $\mathrm{RQI} = 1$. This is the \emph{linear representation}, where random embeddings give $\mathrm{RQI} \approx 0$.
+
+\subsection{Effective theory and the grokking rate}
+\label{sec:efftheory}
+
+The effective theory is about whether a training set contains enough
+parallelograms to force the linear representation and, it is, then how quickly
+training gets there. To make this tractable, Liu et al.\ leave out the decoder, so
+the normalised embeddings descend a loss on violated parallelograms.
+
+In one dimension each parallelogram in $P_0(D)$ is a linear equation
+$E_i + E_j = E_m + E_n$, and these equations form the set $A(P_0(D))$. The effective loss $\ell_{\mathrm{eff}} = \ell_0/Z_0$ is the mean
+squared violation $\ell_0$ of the equations, normalised by
+$Z_0 = \sum_k |\tilde{\mathbf{E}}_k|^2$. And, because $\ell_0$ is quadratic,
+gradient descent on it is linear, $d\mathbf{R}/dt = -\mathbf{H}\mathbf{R}$,
+with the Hessian
+%
+\begin{equation}
+  \mathbf{H}_{ij} = \frac{1}{Z_0}
+    \frac{\partial^2 \ell_0}{\partial \mathbf{E}_i \partial \mathbf{E}_j}.
+  \label{eq:hessian}
+\end{equation}
+%
+Each eigenvector of $\mathbf{H}$ is a direction in which the embeddings can
+move, and its eigenvalue, sorted as $\lambda_1 \le \dots \le \lambda_p$, is
+the rate at which deviations in that direction die out. A zero eigenvalue means
+that the training equations do not constrain that direction.
+
+Translating or scaling all embeddings would not break a parallelogram, so
+$\lambda_1 = \lambda_2 = 0$ for every training set. If
+$\lambda_3 = 0$, a non-linear representation fits the training equations equally
+well. If $\lambda_3 > 0$, every other direction is constrained, the nullity
+$n_0$ of $A(P_0(D))$ is two, and the linear representation is unique up to
+these two changes.
+
+In that case, $\lambda_3$ is the slowest rate that matters, so it sets the timescale for
+approaching the linear representation. Liu et al.\ call it the
+\emph{grokking rate} and give the time towards the linear structure as
+%
+\begin{equation}
+  t_h = \frac{1}{\lambda_3}, \qquad n_h = \frac{1}{\lambda_3\, \eta},
+  \label{eq:grokrate}
+\end{equation}
+%
+where $\eta$ is the embedding learning rate and $n_h$ the number of steps.
+
+\subsection{Claims under test}
+\label{sec:claims}
+
+I test three claims of~\cite{liu2022grokking} for $p = 10$:
+%
+\begin{itemize}
+  \item[\textbf{C1}] \emph{(\cite{liu2022grokking}, Fig.~4a.)} The probability that a random training
+    set gives $\lambda_3 > 0$ rises sharply at a critical data fraction
+    $r_c \approx 0.4$.
+  \item[\textbf{C2}] \emph{(\cite{liu2022grokking}, Fig.~4b.)} ``The number of steps to reach
+    $\mathrm{RQI} > 0.95$ is seen to have a phase transition at $r_c = 0.4$,
+    agreeing with the proposed effective theory.''
+  \item[\textbf{C3}] \emph{(\cite{liu2022grokking}, Fig.~5b.)} Among trained networks, the steps to
+    $\mathrm{RQI} > 0.95$ decrease with $\lambda_3$, as predicted by
+    $t \sim 1/\lambda_3$.
+\end{itemize}
+%
+Claim 1 (C1) depends only on the training set, the upper part of
+Fig.~\ref{fig:pipeline}. Claim 2 (C2) and Claim 3 (C3) depend on what training does with it, the
+lower part.

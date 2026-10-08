@@ -1,0 +1,36 @@
+% =====================================================================
+% A2 — Section 1: Introduction.  DRAFT 1, 6 Oct 2026.
+% Problem -> what the paper claims -> why this claim -> what we did ->
+% what we found (stated up front, as the A1 feedback asked).
+% =====================================================================
+\section{Introduction}
+\label{sec:intro}
+
+Neural networks sometimes generalise long after they have fit their training
+data, a behaviour known as \emph{grokking}~\cite{power2022grokking}. It was
+first seen on small algorithmic tasks, where a network reaches perfect
+training accuracy and then suddenly starts to get unseen examples right, thousands of steps later. 
+This does not fit the normal picture of overfitting,
+in which test performance only gets worse once the training set has been
+memorised.
+
+Liu et al.~\cite{liu2022grokking} explain grokking as representation
+learning, so the network generalises once its embeddings become structured. For a
+toy addition task they also make a quantitative prediction. Below a critical
+training data fraction $r_c \approx 0.4$, the training data usually do not determine the right structure, and the paper
+links this to no generalisation. Above, training sets increasingly determine the structure. I chose to test
+this prediction because it is the sharpest claim in the paper, because each
+run takes minutes on a laptop, and because the authors released their code.
+
+This report follows the Replication Track~\cite{pineau2021reproducibility}. I
+rerun the experiment behind the paper's Fig.~4 with the authors' own code,
+first exactly as released and then with more seeds, and I add two ablations
+on the decoder.
+
+The theory's training-free prediction reproduces. However, the trained networks
+do not follow it with the released settings. Half of the trained networks find the
+structure only at $r \approx 0.76$, and in my runs having enough information in
+the data was necessary but not sufficient. My ablations suggest why.
+The theory predicts when the data \emph{determine} the representation, but
+whether training actually \emph{finds} it depends on how fast the decoder
+learns.

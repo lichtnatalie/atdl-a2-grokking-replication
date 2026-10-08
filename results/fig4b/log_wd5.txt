@@ -1,0 +1,23 @@
+220 runs to do (0 already done) -> results/fig4b/runs_wd5.csv
+10/220 done, 152s
+20/220 done, 298s
+30/220 done, 442s
+40/220 done, 588s
+50/220 done, 738s
+60/220 done, 884s
+70/220 done, 1034s
+80/220 done, 1182s
+90/220 done, 1333s
+100/220 done, 1483s
+110/220 done, 1634s
+120/220 done, 1785s
+130/220 done, 1934s
+140/220 done, 2082s
+150/220 done, 2229s
+160/220 done, 2375s
+170/220 done, 2520s
+180/220 done, 2666s
+190/220 done, 2812s
+200/220 done, 2960s
+210/220 done, 3103s
+220/220 done, 3250s
