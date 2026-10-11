@@ -1,0 +1,24 @@
+220 runs to do (0 already done) -> results/fig4b/runs_baseline.csv
+10/220 done, 151s
+20/220 done, 293s
+200 runs to do (20 already done) -> results/fig4b/runs_baseline.csv
+10/200 done, 161s
+20/200 done, 306s
+30/200 done, 451s
+40/200 done, 598s
+50/200 done, 741s
+60/200 done, 883s
+70/200 done, 1022s
+80/200 done, 1164s
+90/200 done, 1309s
+100/200 done, 1453s
+110/200 done, 1594s
+120/200 done, 1735s
+130/200 done, 1878s
+140/200 done, 2027s
+150/200 done, 2172s
+160/200 done, 2316s
+170/200 done, 2463s
+180/200 done, 2611s
+190/200 done, 2762s
+200/200 done, 2913s
